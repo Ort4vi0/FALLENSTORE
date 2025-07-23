@@ -136,7 +136,7 @@ function listarProdutos() {
       console.log(
         `ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${
           produto.quantidade
-        } | Valor: ${produto.valor.toFixed(2)} | Categoria: R$ ${
+        } | Valor: ${produto.valor.toFixed(2)} | Categoria: ${
           produto.categoria
         }`
       );
@@ -146,12 +146,58 @@ function listarProdutos() {
 }
 
 function pesquisarProdutos() {
-  rl.question("Qual o nome do produto que deseja procurar?\n", (filtro) => {
-    const busca = produtos.filter((produtos) => produtos.nome == filtro);
-    console.log(busca);
-    console.log("\nPressione Enter para voltar ao menu");
-    return rl.question("", exibirMenu);
-  });
+  rl.question("Deseja pesquisar por categoria ou nome?\nDigite 1 para categoria e 2 para nome.\n", (filtrar) => {
+    filtrar = parseInt(filtrar)
+    switch(filtrar){
+      case 1: 
+        rl.question("Qual a categoria do produto que deseja procurar?\n1 para eletrônico e 2 para não eletrônico\n", (filtro) => {
+          filtro = parseInt(filtro)
+          switch(filtro){
+            case 1:
+              produtos.forEach((produto, index) => {
+                if(produto.categoria == "Eletrônico"){
+                  console.log(`ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${
+                    produto.quantidade
+                  } | Valor: ${produto.valor.toFixed(2)} | Categoria: ${
+                    produto.categoria
+                  }`)
+                  console.log("\nPressione Enter para voltar ao menu");
+                  return rl.question("", exibirMenu);
+                }else{
+                  console.log("Categoria inexistente no sistema")
+                  console.log("\nPressione Enter para voltar ao menu");
+                 return rl.question("", exibirMenu);
+                }
+              })
+              }
+             })
+            break
+      case 2:
+        rl.question("Qual o nome do produto que deseja procurar?\n", (filtro) => {
+          produtos.forEach((produto, index) => {
+            if(produto.nome == filtro){
+              console.log(`ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${
+                produto.quantidade
+              } | Valor: ${produto.valor.toFixed(2)} | Categoria: ${
+                produto.categoria
+              }`)
+            } else {
+              console.log("Nome inexistente no sistema")
+              console.log("\nPressione Enter para voltar ao menu");
+              return rl.question("", exibirMenu);
+            }
+          })
+          console.log("\nPressione Enter para voltar ao menu");
+          return rl.question("", exibirMenu);
+        });
+        break
+      default:
+        console.log("Número inválido, tente novamente")
+        pesquisarProdutos()
+        break
+    }
+  })
+  
 }
 
 function verificarQNT() {
