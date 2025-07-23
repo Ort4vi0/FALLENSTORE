@@ -1,1 +1,65 @@
-efef
+
+const { clear } = require("console");
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+var produtos = []
+
+
+function exibirMenu() {
+    console.log(
+      "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Atualizar quantidade de produtos\n4-Deletar lembrete\n5-Verificar produtor com quantidade baixa\n0-Sair do programa"
+    );
+    rl.question("Insira a opção desejada.\n", (opcaoMenu) => {
+      opcaoMenu = parseInt(opcaoMenu, 10);
+      switch (opcaoMenu) {
+        case 1:
+          adicionarProduto();
+          break;
+        case 2:
+          listarProdutos();
+          break;
+        case 3:
+          atulizarProdutos();
+          break;
+        case 4:
+          deletarProduto();
+          break;
+        case 5:
+          console, clear();
+          verificarQNT();
+          break;
+        case 0:
+          process.exit();
+          break;
+        default:
+          console.log("Insira uma opção válida!\n");
+          exibirMenu();
+      }
+    });
+}
+
+function deletarProduto(){
+    console.clear()
+    if(produtos.lenght <= 0){
+        console.log('Você não tem produtos para deletar.')
+        console.log('',exibirMenu)
+    }
+    produtos.forEach((produto, index) => {
+        console.log(`ID: ${index + 1} || Produto: ${produto.nome} | Preço: ${produto.preço} | Quantidade: ${produto.quantidade}`)
+    })
+    rl.question('Digite o ID do produto que deseja deletar:\n',(opçãoDeletar) => {
+        opçãoDeletar = parseInt(opçãoDeletar) - 1;
+        if(opçãoDeletar < 0 || opçãoDeletar > produtos.length){
+            console.log('Opção inválida. Retornando ao menu...')
+            exibirMenu()
+        }else{
+            console.clear()
+            produtos.splice(opçãoDeletar, 1)
+            console.log(`Produto ${produtos[opçãoDeletar].nome} deletado !`)
+            exibirMenu()
+        }
+    })
+}
