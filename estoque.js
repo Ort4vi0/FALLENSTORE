@@ -4,6 +4,8 @@ const rl = require("readline").createInterface({
     input: process.stdin,
     output: process.stdout,
   });
+
+let produtos = []
   
 function exibirMenu() {
     console.log(
@@ -36,4 +38,31 @@ function exibirMenu() {
           exibirMenu();
       }
     });
+}
+
+exibirMenu()
+
+function adicionarProduto() {
+  rl.question("Digite o nome do produto: ", (nome) => {
+    rl.question("Digite a quantidade: ", (quantidade) => {
+
+      if (quantidade < 0) {
+        console.clear();
+        console.log("Digite uma quantidade valida.");
+        cadastrar();
+      }
+      rl.question("Digite o valor do produto: ", (valor) => {
+        valor = parseInt(valor);
+        produtos.push({
+          nome,
+          quantidade: parseInt(quantidade),
+          valor,
+        });
+        console.clear();
+        console.log("\nProduto cadastrado.\n");
+        exibirMenu();
+
+      });
+    });
+  });
 }
