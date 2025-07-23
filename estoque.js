@@ -5,7 +5,7 @@ const rl = require("readline").createInterface({
     output: process.stdout,
   });
 
-let produtos = [] 
+let produtos = []
   
 function exibirMenu() {
     console.log(
