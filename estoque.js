@@ -213,5 +213,4 @@ function atualizarProdutos() {
     });
   }
 }
-
 exibirMenu()
