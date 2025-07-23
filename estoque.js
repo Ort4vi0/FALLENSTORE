@@ -8,7 +8,7 @@ let produtos = []
 
 function exibirMenu() {
     console.log(
-      "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Pesquisar produto\n4-Atualizar quantidade de produtos\n5-Deletar produto\n6-Verificar produtor com quantidade baixa\n0-Sair do programa"
+      "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Pesquisar produto\n4-Atualizar quantidade de produtos\n5-Deletar produto\n6-Verificar produtor com quantidade baixa\n7- verificar valor do estoque\n0-Sair do programa"
     );
     rl.question("Insira a opção desejada.\n", (opcaoMenu) => {
       opcaoMenu = parseInt(opcaoMenu, 10);
@@ -31,6 +31,9 @@ function exibirMenu() {
         case 6:
           console.clear();
           verificarQNT();
+          break;
+        case 7:
+          valorTotal()
           break;
         case 0:
           process.exit();
@@ -66,6 +69,7 @@ function deletarProduto(){
 }
 
 function adicionarProduto() {
+  console.clear()
   rl.question("Digite o nome do produto: ", (nome) => {
     rl.question("Digite a quantidade: ", (quantidade) => {
 
@@ -75,7 +79,7 @@ function adicionarProduto() {
         cadastrar();
       }
       rl.question("Digite o valor do produto: ", (valor) => {
-        valor = parseInt(valor);
+        valor = parseFloat(valor);
         produtos.push({
           nome,
           quantidade: parseInt(quantidade),
@@ -212,5 +216,16 @@ function atualizarProdutos() {
       });
     });
   }
+}
+
+function valorTotal(){
+  console.clear()
+  console.log('======VALOR=TOTAL======')
+  let valorTot = 0
+  for (index = 0; index < produtos.length; index++){
+    valorTot = valorTot + produtos[index].valor
+  }
+  console.log(`Valor total: ${valorTot}`)
+  exibirMenu()
 }
 exibirMenu()
