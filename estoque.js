@@ -23,7 +23,7 @@ function exibirMenu() {
           pesquisarProdutos();
           break;
         case 4:
-          atulizarProdutos();
+          atualizarProdutos();
           break;
         case 5:
           deletarProduto();
@@ -98,7 +98,7 @@ function listarProdutos() {
     console.log("======PRODUTOS======")
     produtos.forEach((produto, index) => {
       console.log(
-        `ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${produto.quantidade} | Valor: R$ ${produto.valor}`
+        `ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${produto.quantidade} | Valor: R$ ${produto.valor.toFixed(2)}`
       )
     })
     exibirMenu()
@@ -151,4 +151,66 @@ function verificarQNT() {
     }
   }
 
+function atualizarProdutos() {
+  if (produtos.length === 0) {
+    console.clear()
+    console.log("Não há nenhum produto cadastrado.");
+    rl.question("Pressione Enter para retornar ao Menu...\n", exibirMenu);
+  } else {
+    console.log("\n--- Produtos Cadastrados ---");
+    produtos.forEach((produto, index) => {
+      console.log(`ID: ${index + 1} | Produto: ${produto.nome} | Quantidade: ${produto.quantidade} | Valor: R$${produto.valor.toFixed(2)}`);
+    });
+    console.log("-".repeat(60));
+
+    rl.question("Insira o ID do produto que deseja editar (ou 'cancelar' para voltar): ", IDdoProduto => {
+      if (IDdoProduto.toLowerCase() === 'cancelar') {
+        exibirMenu();
+        return;
+      }
+      const index = parseInt(IDdoProduto) - 1;
+      if (isNaN(index) || index < 0 || index >= produtos.length) {
+        console.log("ID inválido. Por favor, insira um número válido.");
+        atualizarProdutos();
+        return;
+      }
+
+      const produtoSelecionado = produtos[index];
+      console.log(`\nVocê selecionou: ID: ${index + 1} | Produto: ${produtoSelecionado.nome} | Quantidade: ${produtoSelecionado.quantidade} | Valor: R$${produtoSelecionado.valor.toFixed(2)}`);
+
+      rl.question("Confirma a edição deste produto? [s/n] ", confirmSelectP => {
+        if (confirmSelectP.toLowerCase() === 's' || confirmSelectP.toLowerCase() === 'sim') {
+          rl.question(`Novo nome para o produto (anterior: ${produtoSelecionado.nome}): `, newNome => {
+            rl.question(`Nova quantidade (anterior: ${produtoSelecionado.quantidade}): `, newQuantidade => {
+              if(isNaN(newQuantidade) || newQuantidade < 0){
+                console.clear();
+                console.log("Tongo, você não inseriu um valor válido, repense sua vida!")
+                atualizarProdutos();
+              } else {
+                rl.question(`Novo valor (anterior: ${produtoSelecionado.valor.toFixed(2)}): `, newValor => {
+                  if(isNaN(newValor) || newValor < 0){
+                    console.clear();
+                    console.log("Tongo, você não inseriu um valor válido, repense sua vida!")
+                    atualizarProdutos();
+                  } else {
+                    produtoSelecionado.nome = newNome || produtoSelecionado.nome;
+                    produtoSelecionado.quantidade = parseInt(newQuantidade) || produtoSelecionado.quantidade;
+                    produtoSelecionado.valor = parseFloat(newValor) || produtoSelecionado.valor;
+    
+                    console.clear()
+                    console.log("\nProduto atualizado com sucesso BB!");
+                    exibirMenu();
+                  }
+                });
+              }
+            });
+          });
+        } else {
+          console.log("Edição cancelada. Retornando ao menu... xD");
+          exibirMenu();
+        }
+      });
+    });
+  }
+}
 exibirMenu()
