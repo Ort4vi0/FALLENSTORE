@@ -52,7 +52,7 @@ function deletarProduto(){
         console.log('',exibirMenu)
     }
     produtos.forEach((produto, index) => {
-        console.log(`ID: ${index + 1} || Produto: ${produto.nome} | Preço: ${produto.preço} | Quantidade: ${produto.quantidade}`)
+        console.log(`ID: ${index + 1} || Categoria: ${produto.categoria} | Produto: ${produto.nome} | Preço: ${produto.preço} | Quantidade: ${produto.quantidade}`)
     })
     rl.question('Digite o ID do produto que deseja deletar:\n',(opçãoDeletar) => {
         opçãoDeletar = parseInt(opçãoDeletar) - 1;
@@ -80,14 +80,17 @@ function adicionarProduto() {
       }
       rl.question("Digite o valor do produto: ", (valor) => {
         valor = parseFloat(valor);
+        rl.question('Digite a categoria do produto: ', (categoria) => {
         produtos.push({
           nome,
           quantidade: parseInt(quantidade),
           valor,
-        });
+          categoria: categoria.trim(),
+        })
         console.clear();
         console.log("\nProduto cadastrado.\n");
         exibirMenu();
+      })
       });
     });
   });
@@ -95,6 +98,8 @@ function adicionarProduto() {
 
 function listarProdutos() {
   console.clear()
+  rl.question('Digite a categoria desejada: ',(filtro) => {
+  const busca = produtos.filter((produtos) => produtos.categoria == (filtro))
   if (produtos.length <= 0) {
     console.log("Não há produtos.")
     exibirMenu()
@@ -102,11 +107,12 @@ function listarProdutos() {
     console.log("======PRODUTOS======")
     produtos.forEach((produto, index) => {
       console.log(
-        `ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${produto.quantidade} | Valor: R$ ${produto.valor.toFixed(2)}`
+        `ID: ${index + 1} | Categoria: ${produto.categoria} | Produto: ${produto.nome}  | Quantidade: ${produto.quantidade} | Valor: R$ ${produto.valor.toFixed(2)}`
       )
     })
     exibirMenu()
   }
+  })
 }
 
 function pesquisarProdutos(){
