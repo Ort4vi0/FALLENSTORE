@@ -5,8 +5,7 @@ const rl = require("readline").createInterface({
     output: process.stdout,
   });
 
-var produtos = []
-
+let produtos = []
 
 function exibirMenu() {
     console.log(
@@ -40,6 +39,8 @@ function exibirMenu() {
       }
     });
 }
+
+exibirMenu()
 
 function deletarProduto(){
     console.clear()
