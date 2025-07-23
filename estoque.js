@@ -1,4 +1,3 @@
-
 const { clear } = require("console");
 const rl = require("readline").createInterface({
     input: process.stdin,
@@ -6,10 +5,10 @@ const rl = require("readline").createInterface({
   });
 
 let produtos = []
-  
+
 function exibirMenu() {
     console.log(
-      "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Atualizar quantidade de produtos\n4-Deletar lembrete\n5-Verificar produtor com quantidade baixa\n0-Sair do programa"
+      "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Pesquisar produto\n4-Atualizar quantidade de produtos\n5-Deletar produto\n6-Verificar produtor com quantidade baixa\n0-Sair do programa"
     );
     rl.question("Insira a opção desejada.\n", (opcaoMenu) => {
       opcaoMenu = parseInt(opcaoMenu, 10);
@@ -21,13 +20,16 @@ function exibirMenu() {
           listarProdutos();
           break;
         case 3:
-          atulizarProdutos();
+          pesquisarProdutos();
           break;
         case 4:
-          deletarProduto();
+          atulizarProdutos();
           break;
         case 5:
-          console, clear();
+          deletarProduto();
+          break;
+        case 6:
+          console.clear();
           verificarQNT();
           break;
         case 0:
@@ -40,7 +42,28 @@ function exibirMenu() {
     });
 }
 
-exibirMenu()
+function deletarProduto(){
+    console.clear()
+    if(produtos.lenght <= 0){
+        console.log('Você não tem produtos para deletar.')
+        console.log('',exibirMenu)
+    }
+    produtos.forEach((produto, index) => {
+        console.log(`ID: ${index + 1} || Produto: ${produto.nome} | Preço: ${produto.preço} | Quantidade: ${produto.quantidade}`)
+    })
+    rl.question('Digite o ID do produto que deseja deletar:\n',(opçãoDeletar) => {
+        opçãoDeletar = parseInt(opçãoDeletar) - 1;
+        if(opçãoDeletar < 0 || opçãoDeletar > produtos.length){
+            console.log('Opção inválida. Retornando ao menu...')
+            exibirMenu()
+        }else{
+            console.clear()
+            produtos.splice(opçãoDeletar, 1)
+            console.log(`Produto ${produtos[opçãoDeletar].nome} deletado!`)
+            exibirMenu()
+        }
+    })
+}
 
 function adicionarProduto() {
   rl.question("Digite o nome do produto: ", (nome) => {
@@ -61,8 +84,34 @@ function adicionarProduto() {
         console.clear();
         console.log("\nProduto cadastrado.\n");
         exibirMenu();
-
       });
     });
   });
 }
+
+function listarProdutos() {
+  console.clear()
+  if (produtos.length <= 0) {
+    console.log("Não há produtos.")
+    exibirMenu()
+  } else {
+    console.log("======PRODUTOS======")
+    produtos.forEach((produto, index) => {
+      console.log(
+        `ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${produto.quantidade} | Valor: R$ ${produto.valor}`
+      )
+    })
+    exibirMenu()
+  }
+}
+
+function pesquisarProdutos(){
+  rl.question("Qual o nome do produto que deseja procurar?", (filtro) => {
+      const busca = produtos.filter((produtos) => produtos.nome == filtro)
+      console.log(busca)
+      console.log("\nPressione Enter para voltar ao menu")
+      return rl.question("", exibirMenu)
+    })
+}
+
+exibirMenu()
