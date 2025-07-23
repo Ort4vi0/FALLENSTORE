@@ -106,12 +106,49 @@ function listarProdutos() {
 }
 
 function pesquisarProdutos(){
-  rl.question("Qual o nome do produto que deseja procurar?", (filtro) => {
+
+  rl.question("Qual o nome do produto que deseja procurar?\n", (filtro) => {
       const busca = produtos.filter((produtos) => produtos.nome == filtro)
       console.log(busca)
       console.log("\nPressione Enter para voltar ao menu")
       return rl.question("", exibirMenu)
     })
 }
+
+
+function verificarQNT() {
+    if (produtos.length == 0) {
+      console.log("Nenhum produto registrado\n");
+      exibirMenu();
+    } else {
+      rl.question(
+        "Insira qual a quantidade que deseja verificar: ",
+        (qntBaixa) => {
+          qntBaixa = parseInt(qntBaixa, 10);
+          if (isNaN(qntBaixa)) {
+            console.clear();
+            console.log("Quantidade inválida, insira novamente!");
+            verificarQNT();
+          } else {
+            console.clear();
+            console.log(
+              `======Produtos com quantidade abaixo de ${qntBaixa}:=======`
+            );
+            produtos.forEach((produto, index) => {
+              if (produto.quantidade < qntBaixa) {
+                console.log(
+                  `${index + 1} - Produto: ${produto.nome} | Preço: ${
+                    produto.valor
+                  } | Quantidade: ${produto.quantidade}\n`
+                );
+                console.log("============================================");
+              }
+            });
+            exibirMenu();
+          }
+        }
+      );
+    }
+  }
 
 exibirMenu()
