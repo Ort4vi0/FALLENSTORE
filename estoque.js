@@ -106,6 +106,7 @@ function listarProdutos() {
 }
 
 function pesquisarProdutos(){
+
   rl.question("Qual o nome do produto que deseja procurar?\n", (filtro) => {
       const busca = produtos.filter((produtos) => produtos.nome == filtro)
       console.log(busca)
@@ -113,6 +114,7 @@ function pesquisarProdutos(){
       return rl.question("", exibirMenu)
     })
 }
+
 
 function verificarQNT() {
     if (produtos.length == 0) {
@@ -148,4 +150,5 @@ function verificarQNT() {
       );
     }
   }
+
 exibirMenu()
