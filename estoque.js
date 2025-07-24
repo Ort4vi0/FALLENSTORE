@@ -8,7 +8,7 @@ let produtos = [];
 
 function exibirMenu() {
   console.log(
-    "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Pesquisar produto\n4-Atualizar quantidade de produtos\n5-Deletar produto\n6-Verificar produtor com quantidade baixa\n7- verificar valor do estoque\n0-Sair do programa"
+    "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Pesquisar produto\n4-Atualizar quantidade de produtos\n5-Deletar produto\n6-Verificar produtor com quantidade baixa\n7-Verificar valor do estoque\n0-Sair do programa"
   );
   rl.question("Insira a opção desejada.\n", (opcaoMenu) => {
     opcaoMenu = parseInt(opcaoMenu, 10);
