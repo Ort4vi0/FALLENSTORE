@@ -8,7 +8,7 @@ let produtos = [];
 
 function exibirMenu() {
   console.log(
-    "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Pesquisar produto\n4-Atualizar quantidade de produtos\n5-Deletar produto\n6-Verificar produtor com quantidade baixa\n7-Verificar valor do estoque\n0-Sair do programa"
+    "=========MENU=========\n1-Adicionar produto\n2-Listar produtos\n3-Pesquisar produto\n4-Atualizar quantidade de produtos\n5-Deletar produto\n6-Verificar produtos com quantidade baixa\n7-Verificar valor do estoque\n0-Sair do programa"
   );
   rl.question("Insira a opção desejada.\n", (opcaoMenu) => {
     opcaoMenu = parseInt(opcaoMenu, 10);
@@ -47,28 +47,30 @@ function exibirMenu() {
 
 function deletarProduto() {
   console.clear();
-  if (produtos.lenght <= 0) {
+  if (produtos.length <= 0) { // Corrigido 'lenght' para 'length'
     console.log("Você não tem produtos para deletar.");
-    console.log("", exibirMenu);
+    exibirMenu(); // Chamando exibirMenu diretamente
+    return; // Adicionado return para evitar a execução do restante da função
   }
   produtos.forEach((produto, index) => {
     console.log(
       `ID: ${index + 1} || Produto: ${produto.nome} | Preço: ${
-        produto.preço
+        produto.valor // Alterado de produto.preço para produto.valor para consistência
       } | Quantidade: ${produto.quantidade}`
     );
   });
   rl.question(
     "Digite o ID do produto que deseja deletar:\n",
-    (opçãoDeletar) => {
-      opçãoDeletar = parseInt(opçãoDeletar) - 1;
-      if (opçãoDeletar < 0 || opçãoDeletar > produtos.length) {
+    (opcaoDeletar) => {
+      opcaoDeletar = parseInt(opcaoDeletar) - 1;
+      if (opcaoDeletar < 0 || opcaoDeletar >= produtos.length) { // Corrigido a condição para 'opcaodeletar >= produtos.length'
         console.log("Opção inválida. Retornando ao menu...");
         exibirMenu();
       } else {
+        const nomeProdutoDeletado = produtos[opcaoDeletar].nome; // Captura o nome antes de deletar
+        produtos.splice(opcaoDeletar, 1);
         console.clear();
-        produtos.splice(opçãoDeletar, 1);
-        console.log(`Produto ${produtos[opçãoDeletar].nome} deletado!`);
+        console.log(`Produto ${nomeProdutoDeletado} deletado!`); // Usa o nome capturado
         exibirMenu();
       }
     }
@@ -79,46 +81,45 @@ function adicionarProduto() {
   console.clear();
   rl.question("Digite o nome do produto: ", (nome) => {
     rl.question("Digite a quantidade: ", (quantidade) => {
-      if (quantidade < 0) {
+      if (parseInt(quantidade) < 0 || isNaN(parseInt(quantidade))) { // Validação de quantidade
         console.clear();
-        console.log("Digite uma quantidade valida.");
-        cadastrar();
+        console.log("Digite uma quantidade válida.");
+        adicionarProduto(); // Chama a função novamente para nova entrada
+        return;
       }
       rl.question("Digite o valor do produto: ", (valor) => {
         valor = parseFloat(valor);
+        if (isNaN(valor) || valor < 0) { // Validação de valor
+          console.clear();
+          console.log("Digite um valor válido.");
+          adicionarProduto(); // Chama a função novamente para nova entrada
+          return;
+        }
         console.log("1-Eletrônico\n2-Não eletrônico");
         rl.question("Digite a categoria do produto: ", (categoria) => {
           categoria = parseInt(categoria);
+          let nomeCategoria = "";
           switch (categoria) {
             case 1:
-              categoria = "Eletrônico";
-              produtos.push({
-                nome,
-                quantidade: parseInt(quantidade),
-                valor,
-                categoria,
-              });
-              console.clear();
-              console.log("\nProduto cadastrado.\n");
-              exibirMenu();
+              nomeCategoria = "Eletrônico";
               break;
             case 2:
-              categoria = "Não eletrônico";
-              produtos.push({
-                nome,
-                quantidade: parseInt(quantidade),
-                valor,
-                categoria,
-              });
-              console.clear();
-              console.log("\nProduto cadastrado.\n");
-              exibirMenu();
+              nomeCategoria = "Não eletrônico";
               break;
             default:
-              console.log("Opção inválida, tente novamente.");
+              console.log("Opção de categoria inválida, tente novamente.");
               adicionarProduto();
-              break;
+              return;
           }
+          produtos.push({
+            nome,
+            quantidade: parseInt(quantidade),
+            valor,
+            categoria: nomeCategoria,
+          });
+          console.clear();
+          console.log("\nProduto cadastrado.\n");
+          exibirMenu();
         });
       });
     });
@@ -136,7 +137,7 @@ function listarProdutos() {
       console.log(
         `ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${
           produto.quantidade
-        } | Valor: ${produto.valor.toFixed(2)} | Categoria: ${
+        } | Valor: R$${produto.valor.toFixed(2)} | Categoria: ${
           produto.categoria
         }`
       );
@@ -146,88 +147,103 @@ function listarProdutos() {
 }
 
 function pesquisarProdutos() {
+  console.clear();
   rl.question("Deseja pesquisar por categoria ou nome?\nDigite 1 para categoria e 2 para nome.\n", (filtrar) => {
-    filtrar = parseInt(filtrar)
+    filtrar = parseInt(filtrar);
     switch(filtrar){
       case 1: 
         rl.question("Qual a categoria do produto que deseja procurar?\n1 para eletrônico e 2 para não eletrônico\n", (filtro) => {
-          filtro = parseInt(filtro)
-          switch(filtro){
+          filtro = parseInt(filtro);
+          let categoriaBusca = "";
+          switch (filtro) {
             case 1:
-              produtos.forEach((produto, index) => {
-                if(produto.categoria == "Eletrônico"){
-                  console.log(`ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${
-                    produto.quantidade
-                  } | Valor: ${produto.valor.toFixed(2)} | Categoria: ${
-                    produto.categoria
-                  }`)
-                  console.log("\nPressione Enter para voltar ao menu");
-                  return rl.question("", exibirMenu);
-                }else{
-                  console.log("Categoria inexistente no sistema")
-                  console.log("\nPressione Enter para voltar ao menu");
-                 return rl.question("", exibirMenu);
-                }
-              })
-              }
-             })
-            break
-      case 2:
-        rl.question("Qual o nome do produto que deseja procurar?\n", (filtro) => {
-          produtos.forEach((produto, index) => {
-            if(produto.nome == filtro){
-              console.log(`ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${
+              categoriaBusca = "Eletrônico";
+              break;
+            case 2:
+              categoriaBusca = "Não eletrônico";
+              break;
+            default:
+              console.log("Opção de categoria inválida, tente novamente.");
+              pesquisarProdutos(); // Retorna para a pesquisa
+              return;
+          }
+          
+          const produtosFiltrados = produtos.filter(produto => produto.categoria === categoriaBusca);
+          if (produtosFiltrados.length > 0) {
+            console.log(`\n====== Produtos na categoria "${categoriaBusca}" =======`);
+            produtosFiltrados.forEach((produto, index) => {
+              console.log(`ID: ${index + 1} | Produto: ${produto.nome} | Quantidade: ${
                 produto.quantidade
-              } | Valor: ${produto.valor.toFixed(2)} | Categoria: ${
+              } | Valor: R$${produto.valor.toFixed(2)} | Categoria: ${
                 produto.categoria
-              }`)
-            } else {
-              console.log("Nome inexistente no sistema")
-              console.log("\nPressione Enter para voltar ao menu");
-              return rl.question("", exibirMenu);
-            }
-          })
+              }`);
+            });
+          } else {
+            console.log(`Nenhum produto encontrado na categoria "${categoriaBusca}".`);
+          }
           console.log("\nPressione Enter para voltar ao menu");
           return rl.question("", exibirMenu);
         });
-        break
+        break;
+      case 2:
+        rl.question("Qual o nome do produto que deseja procurar?\n", (filtroNome) => {
+          const produtosFiltradosPorNome = produtos.filter(produto => produto.nome.toLowerCase().includes(filtroNome.toLowerCase()));
+          if (produtosFiltradosPorNome.length > 0) {
+            console.log(`\n====== Produtos com nome contendo "${filtroNome}" =======`);
+            produtosFiltradosPorNome.forEach((produto, index) => {
+              console.log(`ID: ${index + 1} | Produto: ${produto.nome} | Quantidade: ${
+                produto.quantidade
+              } | Valor: R$${produto.valor.toFixed(2)} | Categoria: ${
+                produto.categoria
+              }`);
+            });
+          } else {
+            console.log(`Nenhum produto encontrado com o nome "${filtroNome}".`);
+          }
+          console.log("\nPressione Enter para voltar ao menu");
+          return rl.question("", exibirMenu);
+        });
+        break;
       default:
-        console.log("Número inválido, tente novamente")
-        pesquisarProdutos()
-        break
+        console.log("Opção inválida, tente novamente.");
+        pesquisarProdutos();
+        break;
     }
-  })
-  
+  });
 }
 
 function verificarQNT() {
-  if (produtos.length == 0) {
+  if (produtos.length === 0) {
     console.log("Nenhum produto registrado\n");
     exibirMenu();
+    return;
   } else {
     rl.question(
-      "Insira qual a quantidade que deseja verificar: ",
+      "Insira qual a quantidade que deseja verificar (produtos abaixo desta quantidade serão listados): ",
       (qntBaixa) => {
         qntBaixa = parseInt(qntBaixa, 10);
-        if (isNaN(qntBaixa)) {
+        if (isNaN(qntBaixa) || qntBaixa < 0) {
           console.clear();
-          console.log("Quantidade inválida, insira novamente!");
+          console.log("Quantidade inválida, insira um número positivo!");
           verificarQNT();
         } else {
           console.clear();
-          console.log(
-            `======Produtos com quantidade abaixo de ${qntBaixa}:=======`
-          );
-          produtos.forEach((produto, index) => {
-            if (produto.quantidade < qntBaixa) {
+          const produtosBaixaQuantidade = produtos.filter(produto => produto.quantidade < qntBaixa);
+          if (produtosBaixaQuantidade.length > 0) {
+            console.log(
+              `======Produtos com quantidade abaixo de ${qntBaixa}:=======`
+            );
+            produtosBaixaQuantidade.forEach((produto, index) => {
               console.log(
-                `${index + 1} - Produto: ${produto.nome} | Preço: ${
-                  produto.valor
-                } | Quantidade: ${produto.quantidade}\n`
+                `${index + 1} - Produto: ${produto.nome} | Valor: R$${
+                  produto.valor.toFixed(2)
+                } | Quantidade: ${produto.quantidade} | Categoria: ${produto.categoria}\n`
               );
-              console.log("============================================");
-            }
-          });
+            });
+            console.log("============================================");
+          } else {
+            console.log(`Nenhum produto com quantidade abaixo de ${qntBaixa}.`);
+          }
           exibirMenu();
         }
       }
@@ -246,7 +262,7 @@ function atualizarProdutos() {
       console.log(
         `ID: ${index + 1} | Produto: ${produto.nome} | Quantidade: ${
           produto.quantidade
-        } | Valor: R$${produto.valor.toFixed(2)}`
+        } | Valor: R$${produto.valor.toFixed(2)} | Categoria: ${produto.categoria}`
       );
     });
     console.log("-".repeat(60));
@@ -284,74 +300,71 @@ function atualizarProdutos() {
               confirmSelectP.toLowerCase() === "sim"
             ) {
               rl.question(
-                `Novo nome para o produto (anterior: ${produtoSelecionado.nome}): `,
+                `Novo nome para o produto (anterior: ${produtoSelecionado.nome}, deixe em branco para manter): `,
                 (newNome) => {
                   rl.question(
-                    `Nova quantidade (anterior: ${produtoSelecionado.quantidade}): `,
+                    `Nova quantidade (anterior: ${produtoSelecionado.quantidade}, deixe em branco para manter): `,
                     (newQuantidade) => {
-                      if (isNaN(newQuantidade) || newQuantidade < 0) {
+                      if (newQuantidade !== "" && (isNaN(newQuantidade) || parseInt(newQuantidade) < 0)) {
                         console.clear();
                         console.log(
-                          "Tongo, você não inseriu um valor válido, repense sua vida!"
+                          "Quantidade inválida. Por favor, insira um número válido e positivo."
                         );
                         atualizarProdutos();
-                      } else {
-                        rl.question(
-                          `Novo valor (anterior: ${produtoSelecionado.valor.toFixed(
-                            2
-                          )}): `,
-                          (newValor) => {
-                            if (isNaN(newValor) || newValor < 0) {
+                        return;
+                      }
+                      rl.question(
+                        `Novo valor (anterior: R$${produtoSelecionado.valor.toFixed(2)}, deixe em branco para manter): `,
+                        (newValor) => {
+                          if (newValor !== "" && (isNaN(newValor) || parseFloat(newValor) < 0)) {
+                            console.clear();
+                            console.log(
+                              "Valor inválido. Por favor, insira um número válido e positivo."
+                            );
+                            atualizarProdutos();
+                            return;
+                          }
+                          console.log(
+                            `Nova categoria (anterior: ${produtoSelecionado.categoria}): `
+                          );
+                          rl.question(
+                            "Digite 1 para Eletrônico e 2 para Não eletrônico (deixe em branco para manter): ",
+                            (newCategoria) => {
+                              let categoriaAtualizada = produtoSelecionado.categoria;
+                              if (newCategoria !== "") {
+                                newCategoria = parseInt(newCategoria);
+                                switch (newCategoria) {
+                                  case 1:
+                                    categoriaAtualizada = "Eletrônico";
+                                    break;
+                                  case 2:
+                                    categoriaAtualizada = "Não eletrônico";
+                                    break;
+                                  default:
+                                    console.log(
+                                      "Opção de categoria inválida. Mantendo a categoria anterior."
+                                    );
+                                    break;
+                                }
+                              }
+                              
+                              produtoSelecionado.nome =
+                                newNome || produtoSelecionado.nome;
+                              produtoSelecionado.quantidade =
+                                newQuantidade !== "" ? parseInt(newQuantidade) : produtoSelecionado.quantidade;
+                              produtoSelecionado.valor =
+                                newValor !== "" ? parseFloat(newValor) : produtoSelecionado.valor;
+                              produtoSelecionado.categoria = categoriaAtualizada;
+
                               console.clear();
                               console.log(
-                                "Tongo, você não inseriu um valor válido, repense sua vida!"
+                                "\nProduto atualizado com sucesso BB!"
                               );
-                              atualizarProdutos();
-                            } else {
-                              console.log(
-                                `Nova categoria (anterior: ${produtoSelecionado.categoria}): `
-                              );
-                              rl.question(
-                                "Digite 1 para Eletrônico e 2 para Não eletrônico\n",
-                                (newCategoria) => {
-                                  newCategoria = parseInt(newCategoria);
-                                  switch (newCategoria) {
-                                    case 1:
-                                      newCategoria = "Eletrônico";
-                                      break;
-                                    case 2:
-                                      newCategoria = "Não eletrônico";
-                                      break;
-                                    default:
-                                      console.log(
-                                        "Opção inválida, tente novamente."
-                                      );
-                                      atualizarProdutos();
-                                      break;
-                                  }
-                                  produtoSelecionado.nome =
-                                    newNome || produtoSelecionado.nome;
-                                  produtoSelecionado.quantidade =
-                                    parseInt(newQuantidade) ||
-                                    produtoSelecionado.quantidade;
-                                  produtoSelecionado.valor =
-                                    parseFloat(newValor) ||
-                                    produtoSelecionado.valor;
-                                  produtoSelecionado.categoria =
-                                    newCategoria ||
-                                    produtoSelecionado.categoria;
-
-                                  console.clear();
-                                  console.log(
-                                    "\nProduto atualizado com sucesso BB!"
-                                  );
-                                  exibirMenu();
-                                }
-                              );
+                              exibirMenu();
                             }
-                          }
-                        );
-                      }
+                          );
+                        }
+                      );
                     }
                   );
                 }
@@ -369,12 +382,12 @@ function atualizarProdutos() {
 
 function valorTotal() {
   console.clear();
-  console.log("======VALOR=TOTAL======");
+  console.log("======VALOR TOTAL DO ESTOQUE======");
   let valorTot = 0;
-  for (index = 0; index < produtos.length; index++) {
-    valorTot = valorTot + produtos[index].valor;
+  for (let i = 0; i < produtos.length; i++) { // Corrigido 'index' para 'i' para escopo local
+    valorTot = valorTot + (produtos[i].valor * produtos[i].quantidade); // Multiplicar valor pela quantidade
   }
-  console.log(`Valor total: ${valorTot}`);
+  console.log(`Valor total do estoque: R$${valorTot.toFixed(2)}`);
   exibirMenu();
 }
 exibirMenu();
