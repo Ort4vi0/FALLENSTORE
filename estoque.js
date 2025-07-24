@@ -168,10 +168,32 @@ function pesquisarProdutos() {
                   console.log("\nPressione Enter para voltar ao menu");
                  return rl.question("", exibirMenu);
                 }
+               })
+               break
+            case 2:
+              produtos.forEach((produto, index) => {
+                if(produto.categoria == "Não eletrônico"){
+                  console.log(`ID: ${index + 1} | Produto: ${produto.nome}  | Quantidade: ${
+                    produto.quantidade
+                  } | Valor: ${produto.valor.toFixed(2)} | Categoria: ${
+                    produto.categoria
+                  }`)
+                  console.log("\nPressione Enter para voltar ao menu");
+                  return rl.question("", exibirMenu);
+                }else{
+                  console.log("Categoria inexistente no sistema")
+                  console.log("\nPressione Enter para voltar ao menu");
+                 return rl.question("", exibirMenu);
+                }
               })
-              }
-             })
-            break
+              break
+            default:
+              console.log("Número inválido, tente novamente")
+              pesquisarProdutos()
+              break
+            }
+          })
+          break
       case 2:
         rl.question("Qual o nome do produto que deseja procurar?\n", (filtro) => {
           produtos.forEach((produto, index) => {
