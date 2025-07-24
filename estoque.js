@@ -47,15 +47,15 @@ function exibirMenu() {
 
 function deletarProduto() {
   console.clear();
-  if (produtos.length <= 0) { // Corrigido 'lenght' para 'length'
+  if (produtos.length <= 0) {
     console.log("Você não tem produtos para deletar.");
-    exibirMenu(); // Chamando exibirMenu diretamente
-    return; // Adicionado return para evitar a execução do restante da função
+    exibirMenu();
+    return;
   }
   produtos.forEach((produto, index) => {
     console.log(
       `ID: ${index + 1} || Produto: ${produto.nome} | Preço: ${
-        produto.valor // Alterado de produto.preço para produto.valor para consistência
+        produto.valor
       } | Quantidade: ${produto.quantidade}`
     );
   });
@@ -63,14 +63,14 @@ function deletarProduto() {
     "Digite o ID do produto que deseja deletar:\n",
     (opcaoDeletar) => {
       opcaoDeletar = parseInt(opcaoDeletar) - 1;
-      if (opcaoDeletar < 0 || opcaoDeletar >= produtos.length) { // Corrigido a condição para 'opcaodeletar >= produtos.length'
+      if (opcaoDeletar < 0 || opcaoDeletar >= produtos.length) {
         console.log("Opção inválida. Retornando ao menu...");
         exibirMenu();
       } else {
-        const nomeProdutoDeletado = produtos[opcaoDeletar].nome; // Captura o nome antes de deletar
+        const nomeProdutoDeletado = produtos[opcaoDeletar].nome;
         produtos.splice(opcaoDeletar, 1);
         console.clear();
-        console.log(`Produto ${nomeProdutoDeletado} deletado!`); // Usa o nome capturado
+        console.log(`Produto ${nomeProdutoDeletado} deletado!`);
         exibirMenu();
       }
     }
@@ -81,18 +81,18 @@ function adicionarProduto() {
   console.clear();
   rl.question("Digite o nome do produto: ", (nome) => {
     rl.question("Digite a quantidade: ", (quantidade) => {
-      if (parseInt(quantidade) < 0 || isNaN(parseInt(quantidade))) { // Validação de quantidade
+      if (parseInt(quantidade) < 0 || isNaN(parseInt(quantidade))) {
         console.clear();
         console.log("Digite uma quantidade válida.");
-        adicionarProduto(); // Chama a função novamente para nova entrada
+        adicionarProduto();
         return;
       }
       rl.question("Digite o valor do produto: ", (valor) => {
         valor = parseFloat(valor);
-        if (isNaN(valor) || valor < 0) { // Validação de valor
+        if (isNaN(valor) || valor < 0) {
           console.clear();
           console.log("Digite um valor válido.");
-          adicionarProduto(); // Chama a função novamente para nova entrada
+          adicionarProduto();
           return;
         }
         console.log("1-Eletrônico\n2-Não eletrônico");
@@ -164,7 +164,7 @@ function pesquisarProdutos() {
               break;
             default:
               console.log("Opção de categoria inválida, tente novamente.");
-              pesquisarProdutos(); // Retorna para a pesquisa
+              pesquisarProdutos();
               return;
           }
           
@@ -384,8 +384,8 @@ function valorTotal() {
   console.clear();
   console.log("======VALOR TOTAL DO ESTOQUE======");
   let valorTot = 0;
-  for (let i = 0; i < produtos.length; i++) { // Corrigido 'index' para 'i' para escopo local
-    valorTot = valorTot + (produtos[i].valor * produtos[i].quantidade); // Multiplicar valor pela quantidade
+  for (let i = 0; i < produtos.length; i++) {
+    valorTot = valorTot + (produtos[i].valor * produtos[i].quantidade);
   }
   console.log(`Valor total do estoque: R$${valorTot.toFixed(2)}`);
   exibirMenu();
